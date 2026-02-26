@@ -1,24 +1,88 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+let courses = [];
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+document.addEventListener("DOMContentLoaded", init);
 
-setupCounter(document.querySelector('#counter'))
+async function init() {
+    await fetchCourses();
+    renderTable(courses);
+    addEventListeners();
+}
+
+async function fetchCourses() {
+    try {
+        const response = await fetch("https://webbutveckling.miun.se/files/ramschema.json");
+
+        if (!response.ok) {
+            throw new Error("Fel vid hämtning av JSON");
+        }
+
+        courses = await response.json();
+
+    } catch (error) {
+        console.error("Något gick fel:", error);
+    }
+}
+
+function renderTable(data) {
+    const tableBody = document.getElementById("courseTable");
+    tableBody.innerHTML = "";
+
+    data.forEach(course => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${course.code}</td>
+            <td>${course.coursename}</td>
+            <td>${course.progression}</td>
+        `;
+
+        tableBody.appendChild(row);
+    });
+}
+let currentSort = {
+    column: "",
+    ascending: true
+};
+
+function addEventListeners() {
+    document.querySelectorAll("th").forEach(header => {
+        header.addEventListener("click", () => {
+            sortCourses(header.dataset.sort);
+        });
+    });
+    document.getElementById("searchInput")
+    .addEventListener("input", filterCourses);
+}
+
+function sortCourses(column) {
+
+    if (currentSort.column === column) {
+        currentSort.ascending = !currentSort.ascending;
+    } else {
+        currentSort.column = column;
+        currentSort.ascending = true;
+    }
+
+    courses.sort((a, b) => {
+
+        let valueA = a[column].toLowerCase();
+        let valueB = b[column].toLowerCase();
+
+        if (valueA < valueB) return currentSort.ascending ? -1 : 1;
+        if (valueA > valueB) return currentSort.ascending ? 1 : -1;
+        return 0;
+    });
+
+    renderTable(courses);
+}
+function filterCourses(event) {
+
+    const searchValue = event.target.value.toLowerCase();
+
+    const filtered = courses.filter(course =>
+        course.code.toLowerCase().includes(searchValue) ||
+        course.coursename.toLowerCase().includes(searchValue)
+    );
+
+    renderTable(filtered);
+}
