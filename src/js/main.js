@@ -10,8 +10,7 @@ async function init() {
 
 async function fetchCourses() {
     try {
-        const response = await fetch("https://webbutveckling.miun.se/files/ramschema.json");
-
+        const response = await fetch("/ramschema.json");
         if (!response.ok) {
             throw new Error("Fel vid hämtning av JSON");
         }
@@ -64,7 +63,6 @@ function sortCourses(column) {
     }
 
     courses.sort((a, b) => {
-
         let valueA = a[column].toLowerCase();
         let valueB = b[column].toLowerCase();
 
@@ -75,6 +73,7 @@ function sortCourses(column) {
 
     renderTable(courses);
 }
+
 function filterCourses(event) {
 
     const searchValue = event.target.value.toLowerCase();

@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Ramschema Webbutveckling</title>
-    <link rel="stylesheet" href="/src/css/style.css">
+    <link rel="stylesheet" href="./src/css/style.css">
 </head>
 <body>
 
-<h1>Ramschema - Webbutveckling</h1>
+<div class="container">
+    <h1>Ramschema - Webbutveckling</h1>
 
-<input type="text" id="searchInput" placeholder="Sök kurskod eller kursnamn...">
+    <input type="text" id="searchInput" placeholder="Sök kurskod eller kursnamn...">
 
-<table>
-    <thead>
-        <tr>
-            <th data-sort="code">Kurskod</th>
-            <th data-sort="coursename">Kursnamn</th>
-            <th data-sort="progression">Progression</th>
-        </tr>
-    </thead>
-    <tbody id="courseTable"></tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th data-sort="code">Kurskod</th>
+                <th data-sort="coursename">Kursnamn</th>
+                <th data-sort="progression">Progression</th>
+            </tr>
+        </thead>
+        <tbody id="courseTable"></tbody>
+    </table>
+</div>
 
 <script type="module" src="/src/js/main.js"></script>
 </body>
